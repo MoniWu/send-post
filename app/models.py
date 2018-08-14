@@ -17,6 +17,7 @@ class User(db.Model):
     password = db.Column(db.String(length=100))
     last_login_at = db.Column(db.DateTime())
     token = db.Column(db.String(200), default="")
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
 
     def __init__(self, phonenum, password):
         self.phonenum = phonenum
