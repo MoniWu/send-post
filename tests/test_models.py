@@ -8,30 +8,22 @@ from app.models import db, User
 create_user = False
 
 
-@pytest.mark.usefixtures("testapp")
+@pytest.mark.usefixtures("test_http_client")
 class TestModels:
-    def test_user_save(self, testapp):
+    def test_user_save(self, test_http_client):
         """ Test Saving the user model to the database """
 
-        admin = User('admin', 'supersafepassword')
-        db.session.add(admin)
+        user = User('00000000000', '1')
+        db.session.add(user)
         db.session.commit()
 
-        # test chinese
-        admin = User('管理员', 'supersafepassword')
-        db.session.add(admin)
-        db.session.commit()
-
-        user = User.query.filter_by(username="admin").first()
+        user = User.query.filter_by(phonenum="00000000000").first()
         assert user is not None
 
-        user = User.query.filter_by(username="管理员").first()
-        assert user is not None
-
-    def test_user_password(self, testapp):
+    def test_user_password(self, test_http_client):
         """ Test password hashing and checking """
 
-        admin = User('admin', 'supersafepassword')
+        user = User('123456789', 'supersafepassword')
 
-        assert admin.username == 'admin'
-        assert admin.check_password('supersafepassword')
+        assert user.phonenum == '123456789'
+        assert user.check_password('supersafepassword')

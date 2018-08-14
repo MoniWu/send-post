@@ -8,11 +8,6 @@ from app.commands import configure_commands
 from app.controllers import configure_global_interceptor
 from app.models import db, migrate
 from app.controllers.main import main
-from app.extensions import (
-    cache,
-    debug_toolbar,
-    login_manager
-)
 
 
 def create_app():
@@ -39,21 +34,12 @@ def create_app():
     # commands
     configure_commands(app)
 
-    # cache
-    cache.init_app(app)
-
-    # debug tool bar
-    debug_toolbar.init_app(app)
-
     # SQLAlchemy
     db.init_app(app)
     migrate.init_app(app, db)
     engine = create_engine(app.config.get('SQLALCHEMY_DATABASE_URI'))
     if not database_exists(engine.url):
         create_database(engine.url)
-
-    # login
-    login_manager.init_app(app)
 
     configure_global_interceptor(app)
     # register blueprints

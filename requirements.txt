@@ -1,7 +1,6 @@
+werkzeug
+PyJWT
 Flask
-Flask-Caching
-Flask-DebugToolbar
-Flask-Login
 Flask-SQLAlchemy
 Flask-Migrate
 sqlalchemy_utils

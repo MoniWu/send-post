@@ -5,7 +5,7 @@ from app.models import db, User
 
 
 @pytest.fixture()
-def testapp(request):
+def test_http_client(request):
     app = create_app()
     client = app.test_client()
 
