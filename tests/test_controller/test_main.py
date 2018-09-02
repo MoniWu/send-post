@@ -3,7 +3,7 @@
 
 import pytest
 
-from app.models import User, db
+from app.models import User, db, Post
 
 
 @pytest.mark.usefixtures("test_http_client")

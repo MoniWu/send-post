@@ -1,4 +1,4 @@
-from app.models import db, User
+from app.models import db, User, Post
 
 
 def configure_commands(app):

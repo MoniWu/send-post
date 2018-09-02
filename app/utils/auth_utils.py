@@ -1,7 +1,7 @@
 import jwt
 from functools import wraps
 from flask import request, jsonify
-from app.models import User
+from app.models import User, Post
 from app.settings import Config
 
 

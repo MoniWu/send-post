@@ -1,11 +1,10 @@
 import datetime
 
 from flask import Blueprint, request, jsonify
-from app.models import User, db
+from app.models import User, db, Post
 from app.utils.auth_utils import login_required
-
+from sqlalchemy import text
 main = Blueprint('main', __name__, url_prefix="/api/1.0/")
-
 
 @main.route('/')
 def home():
@@ -36,3 +35,20 @@ def user_info():
         "user_phone": request.user.phonenum,
         "last_login_at": str(request.user.last_login_at)
     })
+
+@main.route("/get_posts",method=['GET'])
+def getpost():
+    for user in Post.query.filter_by(post_type = 0).all():
+        print(user)
+
+
+@main.route("/send_post",methods=['POST'])
+def sendpost():
+    data = request.get_json()
+    p =Post(data['title'],data['content'],data['n_likes'],data['n_comments'],data['post_type'])
+    db.session.add(p)
+    db.session.commit()
+    return jsonify('success')
+
+
+

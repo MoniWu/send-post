@@ -52,3 +52,28 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.phonenum
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer(),primary_key=True)
+    title = db.Column(db.String(length=30))
+    content = db.Column(db.String(length=30))
+    n_likes = db.Column(db.Integer(),default=0)
+    n_comments = db.Column(db.Integer(),default=0)
+    post_type = db.Column(db.Integer())
+    created_at=db.Column(db.DateTime())
+    def __init__(self, title, content, n_likes, n_comments, post_type):
+        self.title = title
+        self.content = content
+        self.n_likes = n_likes
+        self.n_comments = n_comments
+        self.post_type = post_type
+        self.get_created_at()
+
+    def get_created_at(self):
+        created_at = datetime.datetime.utcnow()
+        self.created_at = created_at
+
+    def __repr__(self):
+        return '<User %r>' % self.title
+

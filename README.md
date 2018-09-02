@@ -83,3 +83,4 @@ vi uwsgi.ini # modify the config file
 ```bash
 uwsgi --ini uwsgi.ini
 ```
+"#send-post"
