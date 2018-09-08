@@ -6,6 +6,8 @@ from app.utils.auth_utils import login_required
 from sqlalchemy import text
 main = Blueprint('main', __name__, url_prefix="/api/1.0/")
 
+
+number=0
 @main.route('/')
 def home():
     return jsonify('home')
@@ -36,19 +38,53 @@ def user_info():
         "last_login_at": str(request.user.last_login_at)
     })
 
-@main.route("/get_posts",method=['GET'])
+@main.route("/get_post",methods=['GET'])
 def getpost():
-    for user in Post.query.filter_by(post_type = 0).all():
-        print(user)
+    try:
+        a=Post.query.filter_by(post_type='0').all()
+    except Exception as e:
+        fresponse=jsonify({
+            'status':False,
+             'message':'查询失败'
+        })
+        return fresponse
+    else:
+        b = Post.query.filter_by(post_type='0').all()
+        for m in b:
+            sresponse=jsonify({
+                'status':True,
+                'data':[{
+                    'title': m.title, 'content': m.content, 'n_likes': m.n_likes,
+                    'n_comments': m.n_comments, 'post_type': m.post_type, 'created_at': m.created_at
+                }]
+            })
+            print(sresponse)
+        return jsonify(0)
+
 
 
 @main.route("/send_post",methods=['POST'])
 def sendpost():
-    data = request.get_json()
-    p =Post(data['title'],data['content'],data['n_likes'],data['n_comments'],data['post_type'])
-    db.session.add(p)
-    db.session.commit()
-    return jsonify('success')
+    try:
+        data = request.get_json()
+        p =Post(data['title'],data['content'],data['n_likes'],data['n_comments'],data['post_type'])
+        db.session.add(p)
+        db.session.commit()
+
+    except Exception as e:
+        fresponse = jsonify({
+            'status': False,
+            'message': '插入失败，请检查您的title、content、n_likes、n_comments、post_type信息是否完整并按照定义输入'
+        })
+        return fresponse
+    else:
+        global number
+        number+=1
+        sresponse = jsonify({
+            'status': True,
+            'message': '插入成功'
+        })
+    return sresponse
 
 
 

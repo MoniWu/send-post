@@ -11,6 +11,8 @@ migrate = Migrate()
 
 
 class User(db.Model):
+    __tablename__='User'
+
     id = db.Column(db.Integer(), primary_key=True)
     uuid = db.Column(db.String(length=32), default=lambda: uuid.uuid4().hex, unique=True, index=True)
     phonenum = db.Column(db.String(length=100))
@@ -55,6 +57,8 @@ class User(db.Model):
 
 
 class Post(db.Model):
+    __tablename__='Post'
+
     id = db.Column(db.Integer(),primary_key=True)
     title = db.Column(db.String(length=30))
     content = db.Column(db.String(length=30))
@@ -75,5 +79,46 @@ class Post(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return '<User %r>' % self.title
+        return '<Post %r>' % self.title
+
+
+class Post_comments(db.Model):
+    __tablename__='post_comments'
+
+    id=db.Column(db.Integer(),primary_key=True)
+    uuid = db.Column(db.String(length=32), default=lambda: uuid.uuid4().hex, unique=True, index=True)
+    post_id=db.Column(db.Integer(),db.ForeignKey('Post.id'))
+    comment_user_id=db.Column(db.Integer(),db.ForeignKey('User.id'))
+    content=db.Column(db.String(400),default='')
+    create_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    title=db.Column(db.String(400))
+
+    def __init__(self,post_id,comment_user_id,content,title,created_at):
+        self.post_id = post_id
+        self.comment_user_id = comment_user_id
+        self.content = content
+        self.title = title
+        self.created_at = created_at
+
+
+    post = db.relationship('Post', foreign_keys=[post_id], backref=db.backref('Post_comments_post'), lazy=True)
+    comment_user=db.relationship('User',foreign_keys=[comment_user_id],backref=db.backref('Post_comments_comment_user'),lazy=True)
+
+class Post_like(db.Model):
+    __tablename__ = 'post_like'
+
+    id=db.Column(db.Integer(),primary_key=True)
+    post_id = db.Column(db.Integer(), db.ForeignKey('Post.id'))
+    like_user_id = db.Column(db.Integer(), db.ForeignKey('User.id'))
+    create_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __init__(self,post_id,like_user_id,created_at):
+        self.post_id=post_id
+        self.like_user_id=like_user_id
+        self.create_at=created_at
+
+    post = db.relationship('Post', foreign_keys=[post_id], backref=db.backref('Post_like_post'), lazy=True)
+    like_user = db.relationship('User', foreign_keys=[like_user_id],
+                                   backref=db.backref('Post_like_like_user'), lazy=True)
+
 
